@@ -1,0 +1,42 @@
+[package]
+name = "rate-limiter"
+version = "0.1.0"
+edition = "2021"
+description = "High-throughput sliding window rate limiter backed by Redis"
+
+[[bench]]
+name = "throughput"
+harness = false
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+deadpool-redis = { version = "0.18", features = ["rt_tokio_1"] }
+redis = { version = "0.27", features = ["tokio-comp", "script"] }
+axum = { version = "0.7", optional = true }
+tower = { version = "0.4", optional = true }
+tower-http = { version = "0.5", optional = true, features = ["trace"] }
+http = { version = "1", optional = true }
+dashmap = "6"
+parking_lot = "0.12"
+thiserror = "1"
+tracing = "0.1"
+async-trait = "0.1"
+sha1 = "0.10"
+hex = "0.4"
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["async_tokio"] }
+tokio = { version = "1", features = ["full"] }
+axum = "0.7"
+tower = "0.4"
+http = "1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[features]
+default = []
+axum = ["dep:axum", "dep:tower", "dep:tower-http", "dep:http"]
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3
